@@ -1,0 +1,15 @@
+<%- include("partials/header") -%>
+
+  <img class="img" src="images/<%=itemImage%>" alt="">
+
+  <h3><%=itemName%></h3>
+
+  <p><%=itemDescription%></p>
+
+  <p>Price: $<%=itemPrice%></p>
+
+  <form class="" action="/add" method="post">
+      <button type="submit" name="itemId" value="<%= itemId %>" class="btn btn-sm btn-light" name="button">Add to Cart</button>
+  </form>
+
+<%- include("partials/footer") -%>

@@ -1,0 +1,22 @@
+<%- include("partials/header") -%>
+
+<div class="row mb-3">
+
+  <div class="col-lg-4 themed-grid-col">
+    <h3>Items in Cart:</h3>
+  </div>
+
+<%Merch.forEach(function(item){%>
+    <div class="col-lg-10 themed-grid-col">
+      <p><%=item.name%>, $<%=item.price%> </p>
+    </div>
+<%})%>
+</div>
+<form class="" action="/checkout" method="post">
+<button type="submit" class="btn btn-sm btn-light" name="totalPrice" value="<%=totalPrice%>">Checkout</button>
+</form>
+
+
+
+
+<%- include("partials/footer") -%>
