@@ -14,15 +14,9 @@ app.use(express.static("public"));
 
 mongoose.connect("mongodb://localhost:27017/merchStoreDB", {useNewUrlParser: true});
 
-// const userSchema = {
-//   username: {
-//     type: String,
-//     unique: true
-//   },
-//   password: String
-// };
 
-// const User = mongoose.model("User", userSchema);
+
+
 
 const merchandiseSchema = {
   image: String,
@@ -63,8 +57,29 @@ const cartSchema = {
 
 const Cart = mongoose.model("Cart", cartSchema);
 
+const userSchema = {
+  username: {
+    type: String,
+    unique: true
+  },
+  password: String,
+  email: String,
+  cart: cartSchema
+};
+
+const User = mongoose.model("User", userSchema);
+
+var userUsername = null;
+var userCreated = false;
+var incorrect = false;
+
 app.get("/", function(req, res){
   // res.render("store");
+  incorrect = false
+
+  if(userUsername === null){
+    res.redirect("/login")
+  }
 
 
 
@@ -86,6 +101,25 @@ app.get("/", function(req, res){
   });
 });
 
+app.get("/login", function(req, res){
+  if(incorrect === true){
+      res.render("login",{title: "Incorrect Username or Password"} );
+  } else{
+      res.render("login",{title: "Please sign in"} );
+  }
+
+});
+
+app.get("/signup", function(req, res){
+
+  if(userCreated === false){
+    userCreated = true;
+    res.render("signup", {title: "Username already taken"});
+  } else{
+      res.render("signup", {title: "Create an account"});
+  }
+})
+
 app.get("/cart", function(req, res){
   // res.render("cart");
 
@@ -106,15 +140,9 @@ app.get("/cart", function(req, res){
           totalPrice = totalPrice + parseInt(item.price);
         });
 
-        console.log(totalPrice);
-
-
-
+        // console.log(totalPrice);
 
         res.render("cart", {Merch: merch, totalPrice: totalPrice});
-
-
-
       }
     });
 
@@ -140,6 +168,63 @@ app.post("/", function(req, res){
     const itemId = req.body.itemId;
     console.log(itemId);
       res.redirect("/" + itemId);
+
+});
+
+app.post("/signup", function(req,res){
+    userCreated = true;
+  res.redirect("/signup")
+});
+
+app.post("/create", function(req,res){
+  const inputUsername = req.body.username;
+  const password = req.body.password;
+  const email = req.body.email;
+
+  User.findOne({username: inputUsername}, function(err, foundUser){
+    if(err){
+      console.log(err);
+    } else{
+      if(foundUser === null){
+
+        const user = new User({
+          username: inputUsername,
+          password: password,
+          email: email,
+          cart: null
+
+        });
+        user.save();
+        userCreated = true;
+        incorrect = false
+        res.redirect("/login")
+      } else{
+        userCreated = false;
+        res.redirect("/signup");
+      }
+    }
+
+  });
+});
+
+app.post("/login", function(req, res){
+  const username = req.body.username;
+  const password = req.body.password;
+
+  User.findOne({username: username, password: password}, function(err, foundUser){
+    if(err){
+      console.log(err);
+    } else{
+      console.log(foundUser);
+      if(foundUser === null){
+        incorrect = true;
+        res.redirect("/login")
+      } else{
+        userUsername = username;
+        res.redirect("/");
+      }
+    }
+  });
 
 });
 

@@ -15,7 +15,11 @@ body {
 }
 
 
-h1, h3, p, label{
+h1, h3,label{
+  color: white;
+}
+
+.white{
   color: white;
 }
 
