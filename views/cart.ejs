@@ -7,9 +7,12 @@
   </div>
 
 <%Merch.forEach(function(item){%>
+  <form class="" action="/delete" method="post">
     <div class="col-lg-10 themed-grid-col">
-      <p class = "white"><%=item.name%>, $<%=item.price%> </p>
+      <p class = "white"><%=item.name%>, $<%=item.price%>: <button type="submit" class="btn btn-sm white" name="itemName" value="<%=item.name%>">Delete</button></p>
     </div>
+  </form>
+
 <%})%>
 </div>
 <form class="" action="/checkout" method="post">

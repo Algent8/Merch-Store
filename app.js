@@ -49,10 +49,19 @@ const item3 = new Merch({
   price: 10
 });
 
+const emptyMerchItem = new Merch({
+
+});
+
 const defaultItems = [item1, item2, item3];
+const emptyMerch = [];
 
 const cartSchema = {
-  merch: merchandiseSchema
+  merch: [merchandiseSchema],
+  username: {
+    type: String,
+    unique: true
+  },
 };
 
 const Cart = mongoose.model("Cart", cartSchema);
@@ -63,8 +72,7 @@ const userSchema = {
     unique: true
   },
   password: String,
-  email: String,
-  cart: cartSchema
+  email: String
 };
 
 const User = mongoose.model("User", userSchema);
@@ -84,7 +92,6 @@ app.get("/", function(req, res){
 
 
   Merch.find({}, function(err, foundItems){
-
     if(foundItems.length === 0){
       Merch.insertMany(defaultItems, function(err){
         if(err){
@@ -99,6 +106,11 @@ app.get("/", function(req, res){
       res.render("store", {Merchandise: foundItems});
     }
   });
+});
+
+app.get("/signout", function(req, res){
+  userUsername = null;
+  res.redirect("/");
 });
 
 app.get("/login", function(req, res){
@@ -118,34 +130,28 @@ app.get("/signup", function(req, res){
   } else{
       res.render("signup", {title: "Create an account"});
   }
-})
+});
 
 app.get("/cart", function(req, res){
-  // res.render("cart");
-
-    Cart.find({}, function(err, foundItems){
-
-      if(foundItems.length === 0){
-        res.render("empty");
+    Cart.findOne({username: userUsername}, function(err, foundCart){
+      if(err){
+        console.log(err);
       } else{
-        const merch = [];
-        foundItems.forEach(function(item){
-
-          merch.push(item.merch);
-
-        });
-
-        var totalPrice = 0;
+        // console.log(foundCart.merch);
+        if(foundCart.merch.length === 0){
+          res.render("empty");
+        } else{
+          // console.log(foundCart.merch);
+          const merch = foundCart.merch;
+          var totalPrice = 0;
         merch.forEach(function(item){
           totalPrice = totalPrice + parseInt(item.price);
-        });
-
-        // console.log(totalPrice);
-
+        })
         res.render("cart", {Merch: merch, totalPrice: totalPrice});
+        }
       }
-    });
 
+    });
 });
 
 app.get("/:customItemId", function(req, res){
@@ -191,12 +197,18 @@ app.post("/create", function(req,res){
           username: inputUsername,
           password: password,
           email: email,
-          cart: null
-
         });
         user.save();
         userCreated = true;
         incorrect = false
+
+        const userCart = new Cart({
+          merch: [],
+          username: inputUsername
+        })
+
+        userCart.save();
+
         res.redirect("/login")
       } else{
         userCreated = false;
@@ -232,18 +244,37 @@ app.post("/add", function(req, res){
     const itemId = req.body.itemId;
 
     Merch.findOne({_id: itemId}, function(err, foundItem){
+      // console.log(foundItem);
+      // const cartItem = new Cart({
+      //   merch: foundItem
+      // });
 
-      const cartItem = new Cart({
-        merch: foundItem
+      Cart.findOne({username: userUsername}, function(err, foundCart){
+        foundCart.merch.push(foundItem);
+        foundCart.save();
       });
 
-      cartItem.save();
+
+      // cartItem.save();
 
     });
 
     res.redirect("/");
 
 });
+
+app.post("/delete", function(req, res){
+  const itemName = req.body.itemName;
+
+  Cart.findOneAndUpdate({username: userUsername}, {$pull: {merch: {name: itemName}}}, function(err, foundList){
+    if(err){
+      console.log(err);
+    } else{
+      res.redirect("/cart")
+    }
+  });
+
+})
 
 app.post("/checkout", function(req, res){
   const totalPrice = req.body.totalPrice;
