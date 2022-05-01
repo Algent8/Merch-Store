@@ -69,10 +69,18 @@ const Cart = mongoose.model("Cart", cartSchema);
 const userSchema = {
   username: {
     type: String,
-    unique: true
+    unique: true,
+    required: true
   },
-  password: String,
-  email: String
+  password: {
+    type: String,
+    required: true
+
+  },
+  email:  {
+    type: String,
+    required: true
+  }
 };
 
 const User = mongoose.model("User", userSchema);
@@ -187,6 +195,14 @@ app.post("/create", function(req,res){
   const password = req.body.password;
   const email = req.body.email;
 
+  // if(inputUsername === null){
+  //   res.redirect("/signup");
+  // } else if(password === null){
+  //     res.redirect("/signup");
+  // } else if( email === null){
+  //   res.redirect("/signup");
+  // }
+
   User.findOne({username: inputUsername}, function(err, foundUser){
     if(err){
       console.log(err);
@@ -266,7 +282,7 @@ app.post("/add", function(req, res){
 app.post("/delete", function(req, res){
   const itemName = req.body.itemName;
 
-  Cart.findOneAndUpdate({username: userUsername}, {$pull: {merch: {name: itemName}}}, function(err, foundList){
+  Cart.findOneAndUpdate({username: userUsername}, {$pull: {merch: {}}}, function(err, foundList){
     if(err){
       console.log(err);
     } else{

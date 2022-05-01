@@ -26,3 +26,10 @@ h1, h3,label{
 .purchase-Btn{
   margin-top: 10px;
 }
+
+.checkout-btn{
+  width: 100px;
+
+  display: inline;
+  margin-top: 20px;
+}
