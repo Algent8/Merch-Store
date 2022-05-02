@@ -71,9 +71,9 @@ const item6 = new Merch({
 });
 
 const item7 = new Merch({
-  image: "wolf.jpg",
-  name: "Wolf",
-  description: "A very cool wolf that plays well with others.",
+  image: "dog.jpg",
+  name: "Dog",
+  description: "A cute dog that is friendly and likes to play.",
   price: 1000
 });
 
