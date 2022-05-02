@@ -38,22 +38,73 @@ const item1 = new Merch({
 const item2 = new Merch({
   image: "green-hoodie.jpg",
   name: "Green Hoodie",
-  description: "An amazing product that keeps any wearer warm and styled",
+  description: "An amazing product that keeps any wearer warm and styled.",
   price: 40
 });
 
 const item3 = new Merch({
   image: "black-hat.jpeg",
   name: "Black Hat",
-  description: "A hat of the ages. When your seen wearing this hat you are automatically more stylish than any else",
+  description: "A hat of the ages. When you are seen wearing this hat you are automatically more stylish than anyone else.",
   price: 10
 });
+
+const item4 = new Merch({
+  image: "black-shoes.jpg",
+  name: "Black Shoes",
+  description: "Comfy, Stylish and Stylish what more do you need?",
+  price: 50
+});
+
+const item5 = new Merch({
+  image: "black-and-brown-backpack.jpg",
+  name: "Black and Brown Backpack",
+  description: "This piece of merchandise can carry all of your belongings with ease.",
+  price: 30
+});
+
+const item6 = new Merch({
+  image: "mansion.jpg",
+  name: "Mansion",
+  description: "This is one of the best houses you can ever buy. This house is 21,000 square feet with 9 bedrooms, 18 bathrooms, a detached guest home as well as a subterranean 16-car garage.",
+  price: 7000000
+});
+
+const item7 = new Merch({
+  image: "wolf.jpg",
+  name: "Wolf",
+  description: "A very cool wolf that plays well with others.",
+  price: 1000
+});
+
+const item8 = new Merch({
+  image: "pirate-ship.jpg",
+  name: "Pirate Ship",
+  description: "A vessel that can take you anywhere you want to go overseas. Also comes with a guide on how to drive a pirate ship. We are not liable for any damages that may come to you or the ship.",
+  price: 3000000
+});
+
+const item9 = new Merch({
+  image: "red-car.jpg",
+  name: "Red car",
+  description: "A beautiful red car that has many features such as heated seats, self-driving and, is also powered by electricity.",
+  price: 50000
+});
+
+const item10 = new Merch({
+  image: "snickers.jpg",
+  name: "Snickers",
+  description: "A delicious piece of candy that consists of nougat topped with caramel and peanuts and is enrobed in milk chocolate.",
+  price: 1
+});
+
+
 
 const emptyMerchItem = new Merch({
 
 });
 
-const defaultItems = [item1, item2, item3];
+const defaultItems = [item1, item2, item3 , item4, item5, item6, item7, item8, item9, item10];
 const emptyMerch = [];
 
 const cartSchema = {
@@ -93,9 +144,7 @@ app.get("/", function(req, res){
   // res.render("store");
   incorrect = false
 
-  if(userUsername === null){
-    res.redirect("/login")
-  }
+
 
 
 
@@ -110,6 +159,10 @@ app.get("/", function(req, res){
       });
       res.redirect("/");
     } else{
+
+      if(userUsername === null){
+        res.redirect("/login")
+      }
 
       res.render("store", {Merchandise: foundItems});
     }
@@ -152,10 +205,11 @@ app.get("/cart", function(req, res){
           // console.log(foundCart.merch);
           const merch = foundCart.merch;
           var totalPrice = 0;
+          const cartSize = merch.length;
         merch.forEach(function(item){
           totalPrice = totalPrice + parseInt(item.price);
         })
-        res.render("cart", {Merch: merch, totalPrice: totalPrice});
+        res.render("cart", {Merch: merch, totalPrice: totalPrice, cartSize: cartSize});
         }
       }
 

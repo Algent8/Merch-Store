@@ -15,7 +15,7 @@ body {
 }
 
 
-h1, h3,label{
+h1, h3, h4, label{
   color: white;
 }
 
@@ -29,7 +29,8 @@ h1, h3,label{
 
 .checkout-btn{
   width: 100px;
+}
 
-  display: inline;
-  margin-top: 20px;
+.buttonHolder{
+  text-align: center;
 }
